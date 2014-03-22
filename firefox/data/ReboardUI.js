@@ -1,4 +1,4 @@
-Reboard = {};
+var Reboard = {};
 
 window.addEventListener("load", function () {
     var table = document.getElementById("assignments");

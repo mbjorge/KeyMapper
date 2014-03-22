@@ -1,0 +1,48 @@
+document.addEventListener("keydown", function (event) {
+if (event.which == 72) {
+triggerKeyboardEvent(document, 65);
+} else if (event.which == 75) {
+triggerKeyboardEvent(document, 68);
+}
+});
+
+
+function triggerKeyboardEvent(el, keyCode){
+    var keyboardEvent = document.createEvent("KeyboardEvent");
+    
+    var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
+  
+  
+    keyboardEvent[initMethod](
+                       "keydown",
+                        true,      // bubbles oOooOOo0
+                        true,      // cancelable   
+                        window,    // view
+                        false,     // ctrlKeyArg
+                        false,     // altKeyArg
+                        false,     // shiftKeyArg
+                        false,     // metaKeyArg
+                        keyCode,  
+                        0          // charCode   
+    );
+  
+    el.dispatchEvent(keyboardEvent); 
+}
+
+http://jsbin.com/nalefohu/1/edit
+
+function __triggerKeyboardEvent(el, keyCode)
+{
+    var eventObj = document.createEventObject ?
+        document.createEventObject() : document.createEvent("Events");
+  
+    if(eventObj.initEvent){
+      eventObj.initEvent("keydown", true, true);
+    }
+  
+    eventObj.keyCode = keyCode;
+    eventObj.which = keyCode;
+    
+    el.dispatchEvent ? el.dispatchEvent(eventObj) : el.fireEvent("onkeydown", eventObj); 
+  
+}

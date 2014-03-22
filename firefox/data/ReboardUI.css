@@ -1,0 +1,27 @@
+#map {
+    margin: auto;
+}
+
+table {
+    margin: auto;
+    text-align: center;
+}
+
+th, td {
+    padding: 5px;
+}
+
+tr:hover {
+    background-color: #F7DE62;
+}
+
+tr:first-child:hover {
+    background-color: inherit;
+}
+
+input {
+    text-align: center;
+}
+
+
+

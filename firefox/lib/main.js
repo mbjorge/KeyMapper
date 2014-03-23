@@ -1,8 +1,8 @@
 var data = require("sdk/self").data;
-var widgets = require("sdk/widget");
+var widgets = require("sdk/widget"); //widgets is deprecated as of Firefox 29
 var pageMod = require("sdk/page-mod");
 
-var panel = require("sdk/panel").Panel({
+var reboardUIPanel = require("sdk/panel").Panel({
     width: 300,
     height: 400,
     contentURL: data.url("ReboardUI.html"),
@@ -13,12 +13,12 @@ var widget = widgets.Widget({
   id: "Reboard-UI",
   label: "Reboard UI",
   content: "@",
-  panel: panel
+  panel: reboardUIPanel
 });
 
 pageMod.PageMod({
-    include: "http://rudradevbasak.github.io/16384_hex/",
+    include: "*",
     contentScriptFile: data.url("Reboard.js")
 });
 
-panel.show();
+reboardUIPanel.show();

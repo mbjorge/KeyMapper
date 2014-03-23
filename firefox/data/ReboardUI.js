@@ -4,7 +4,7 @@ window.addEventListener("load", function () {
     var table = document.getElementById("assignments");
     
     Reboard.createNewEntryRow(table);
-    Reboard.createKeyMapRow(table, "A", "H");
+    Reboard.createKeyMapRow(table, "&#8592", "H");
     Reboard.createKeyMapRow(table, "S", "J");
     Reboard.createKeyMapRow(table, "D", "K");
     Reboard.createEditRow(table, "Z", "N", 4);
@@ -66,6 +66,9 @@ Reboard.createKeyInput = function (name, value) {
 	keyInput.size = '1';
 	keyInput.value = value;
 	keyInput.addEventListener("change", function (event) {
+		event.target.value = event.target.value.toUpperCase();
+	});
+	keyInput.addEventListener("keyup", function (event) {
 		event.target.value = event.target.value.toUpperCase();
 	});
 	

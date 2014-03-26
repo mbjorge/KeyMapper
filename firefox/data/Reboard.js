@@ -29,6 +29,8 @@ Reboard.addKeyMapping(phsyicalKeyCode, mappedKeyCode) {
 }
 
 /**
+ * Based on http://jsbin.com/nalefohu/1/edit
+ * Found from: http://stackoverflow.com/a/14468563/1148792
  * @param element element to trigger the event on (usually the document object)
  * @param keyEvent keydown, keyup, or keypress
  */

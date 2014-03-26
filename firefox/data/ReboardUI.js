@@ -125,7 +125,8 @@ Reboard.createDeleteButton = function(row) {
     var deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.name = "delete";
-    deleteButton.innerHTML = "x";
+    deleteButton.className = "delete";
+    deleteButton.innerHTML = "X";
     deleteButton.style.visibility = "hidden";   
     deleteButton.addEventListener("click", function (event) {
     	var table = row.parentNode;

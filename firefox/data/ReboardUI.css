@@ -23,5 +23,10 @@ input {
     text-align: center;
 }
 
+button.delete {
+	font-weight: bold;
+	color: red;
+}
+
 
 

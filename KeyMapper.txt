@@ -46,3 +46,11 @@ function __triggerKeyboardEvent(el, keyCode)
     el.dispatchEvent ? el.dispatchEvent(eventObj) : el.fireEvent("onkeydown", eventObj); 
   
 }
+
+http://rudradevbasak.github.io/16384_hex/
+
+http://www.lsauer.com/2011/08/javascript-keymap-keycodes-in-json.html
+
+http://jsfiddle.net/npF3d/4/
+
+https://mxr.mozilla.org/mozilla-central/source/dom/interfaces/events/nsIDOMKeyEvent.idl

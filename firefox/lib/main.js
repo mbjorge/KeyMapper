@@ -1,6 +1,7 @@
 var data = require("sdk/self").data;
 var widgets = require("sdk/widget"); //widgets is deprecated as of Firefox 29
 var pageMod = require("sdk/page-mod");
+var { Hotkey } = require("sdk/hotkeys");
 
 var reboardUIPanel = require("sdk/panel").Panel({
     width: 300,
@@ -19,6 +20,11 @@ var widget = widgets.Widget({
 pageMod.PageMod({
     include: "*",
     contentScriptFile: data.url("Reboard.js")
+});
+
+var showUIHotKey = Hotkey({
+	combo: "accel-m",
+	onPress: function () {reboardUIPanel.show();}
 });
 
 reboardUIPanel.show();

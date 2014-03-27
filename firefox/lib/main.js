@@ -54,3 +54,7 @@ reboardUIPanel.port.on("create", function(keyMapping) {
 reboardUIPanel.port.on("delete", function(keyMapping) {
 	console.log("delete event");
 });
+
+reboardUIPanel.port.on("reset", function() {
+	console.log("reset event");
+})

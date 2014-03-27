@@ -9,12 +9,22 @@ window.addEventListener("load", function () {
     Reboard.createKeyMapRow(table, "D", "K");
     Reboard.createKeyMapRow(table, "Q", "U");
 
+    var resetButton = document.getElementById("reset");
+    resetButton.addEventListener("click", function (event) {
+    	Reboard.clearKeyMapRows(table);
+    	self.port.emit("reset");
+    });
+    
     self.port.on("create", function (keyMapping) {
     	Reboard.createKeyMapRow(table, keyMapping.physicalKey, keyMapping.mappedKey);
     });
     
     self.port.on("delete", function (keyMapping) {
     	Reboard.removeKeyMapRow(table, keyMapping.physicalKey, keyMapping.mappedKey);
+    });
+    
+    self.port.on("reset", function() {
+    	Reboard.clearKeyMapRows(table);
     });
     
     self.port.emit("ready");
@@ -224,3 +234,30 @@ Reboard.removeKeyMapRow = function(table, physicalKey, mappedKey) {
 		}
 	}
 };
+
+Reboard.clearKeyMapRows = function(table) {
+	for (var i = 0; i < table.rows.length; ) {
+		if (Reboard.isKeyMapRow(table.rows[i])) {
+			table.deleteRow(i); //Note that this will change table.rows.length
+		} else {
+			i++;
+		}
+	}
+};
+
+Reboard.isKeyMapRow = function(row) {
+	if (typeof row === "undefined" || row === null) {
+		return false;
+	}
+	
+	if (row.cells.length < 3) {
+		return false;
+	}
+	
+	//Check for the characteristic text of the delete button, which only KeyMap rows have.
+	if (row.cells[2].childNodes[0].innerHTML === "X") {
+		return true;
+	}
+	
+	return false;
+}

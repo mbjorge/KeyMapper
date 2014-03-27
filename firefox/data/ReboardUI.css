@@ -28,5 +28,10 @@ button.delete {
 	color: red;
 }
 
+button.add {
+	font-weight: bold;
+	color: green;
+}
+
 
 

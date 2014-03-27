@@ -20,8 +20,6 @@ window.addEventListener("load", function () {
     self.port.emit("ready");
 });
 
-
-
 /**
  * rowIndex can be omitted, in which case the row is appended at the end of the table.
  * Returns the created row element.
@@ -48,10 +46,12 @@ Reboard.createNewEntryRow = function(table, physicalKey, mappedKey, rowIndex) {
     var row = table.insertRow(rowIndex);
     var physicalKeyCell = row.insertCell(-1);
     var mappedKeyCell = row.insertCell(-1);
+    var createButtonCell = row.insertCell(-1);
 
     physicalKeyCell.appendChild(Reboard.createKeyInput("key", physicalKey));
     mappedKeyCell.appendChild(Reboard.createKeyInput("value", mappedKey));
-
+    createButtonCell.appendChild(Reboard.createAddButton(row));
+       
     return row;    
 };
 
@@ -84,6 +84,28 @@ Reboard.createKeyInput = function (name, value) {
 	return keyInput;
 };
 
+Reboard.createAddButton = function(row) {
+	
+	if (row === null || typeof row === "undefined") {
+		throw new Error("row is null");
+	}
+	
+    var addButton = document.createElement("button");
+    addButton.type = "button";
+    addButton.name = "add";
+    addButton.className = "add";
+    addButton.innerHTML = "+";
+    addButton.style.visibility = "hidden";   
+    addButton.addEventListener("click", function (event) {
+    	var table = row.parentNode;
+        table.deleteRow(row.rowIndex);
+    });
+    
+    Reboard.addButtonVisibilityModifier(row, addButton);
+    
+    return addButton; 
+};
+
 /**
  * rowIndex can be omitted, in which case the row is inserted directly before the current last row (as the last row is presumed to be a row for user input) 
  * rowIndex of -1 will append the row to the actual end of the table.
@@ -111,8 +133,6 @@ Reboard.createKeyMapRow = function(table, physicalKey, mappedKey, rowIndex) {
     mappedKeyCell.innerHTML = mappedKey;
     deleteButtonCell.appendChild(Reboard.createDeleteButton(row));
 
-    Reboard.addButtonVisibilityModifier(row);
-
     return row;
 };
 
@@ -132,24 +152,51 @@ Reboard.createDeleteButton = function(row) {
     	var table = row.parentNode;
         table.deleteRow(row.rowIndex);
     });
+    
+    Reboard.addButtonVisibilityModifier(row, deleteButton);
+    
     return deleteButton;       
 };
 
-Reboard.addButtonVisibilityModifier = function(row) {
+Reboard.addButtonVisibilityModifier = function(row, button) {
 	
 	if (row === null || typeof row === "undefined") {
 		throw new Error("row is null");
 	}
 	
     row.addEventListener("mouseenter", function(event) {
-        var cell = event.target.cells[2];
-        var deleteButton = cell.childNodes[0];
-        deleteButton.style.visibility = "visible";
+        button.style.visibility = "visible";
     }); 
 
     row.addEventListener("mouseleave", function(event) {
-        var cell = event.target.cells[2];
-        var deleteButton = cell.childNodes[0];
-        deleteButton.style.visibility = "hidden";
+        button.style.visibility = "hidden";
     });
+};
+
+/**
+ * Removes a single row in table that has a mapping from physicalKey -> mappedKey
+ */
+Reboard.removeKeyMapRow = function(table, physicalKey, mappedKey) {
+	
+	if (typeof table === "undefined" || table === null) {
+		throw new TypeError("table is null");
+	}
+	
+	if (typeof physicalKey === "undefined" || physicalKey === null) {
+		throw new TypeError("physicalKey is null");
+	}
+	
+	if (typeof mappedKey === "undefined" || mappedKey === null) {
+		throw new TypeError("mappedKey is null");
+	}
+	
+	for(var i = 0; i < table.rows.length; i++) {
+		var physicalKeyCell = table.rows[i].cells[0];
+		var mappedKeyCell = table.rows[i].cells[1];
+		
+		if (physicalKeyCell.innerHTML === physicalKey && mappedKeyCell.innerHTML === mappedKey) {
+			table.deleteRow(i);
+			return;
+		}
+	}
 };

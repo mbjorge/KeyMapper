@@ -7,7 +7,6 @@ window.addEventListener("load", function () {
     Reboard.createKeyMapRow(table, "&#8592", "H");
     Reboard.createKeyMapRow(table, "S", "J");
     Reboard.createKeyMapRow(table, "D", "K");
-    Reboard.createEditRow(table, "Z", "N", 4);
     Reboard.createKeyMapRow(table, "Q", "U");
 
     self.port.on("create", function (keyMapping) {
@@ -113,15 +112,6 @@ Reboard.createKeyMapRow = function(table, physicalKey, mappedKey, rowIndex) {
     deleteButtonCell.appendChild(Reboard.createDeleteButton(row));
 
     Reboard.addButtonVisibilityModifier(row);
-    
-    row.addEventListener("click", function (event) {
-    	var targetCell = event.target;
-    	var cellIndex = targetCell.cellIndex;
-    	
-    	var editRow = Reboard.convertFromKeyMapToEditRow(row);
-    	var inputBox = editRow.cells[cellIndex].childNodes[0];
-    	inputBox.focus();
-    });
 
     return row;
 };
@@ -162,111 +152,4 @@ Reboard.addButtonVisibilityModifier = function(row) {
         var deleteButton = cell.childNodes[0];
         deleteButton.style.visibility = "hidden";
     });
-};
-
-/**
- * @returns the user input row
- */
-Reboard.convertFromKeyMapToEditRow = function (row) {
-	if (row === null || typeof row === "undefined") {
-		throw new Error("row is null");
-	}
-	
-	if (row.cells.length < 2) {
-		throw new Error("row has less than 2 cells");
-	}
-	
-	var physicalKeyCell = row.cells[0];
-	var mappedKeyCell = row.cells[1];
-	
-	var physicalKey = physicalKeyCell.innerHTML;
-	var mappedKey = mappedKeyCell.innerHTML;
-	
-	var rowIndex = row.rowIndex;
-	
-	var table = row.parentNode;
-    table.deleteRow(rowIndex);
-    
-    return Reboard.createEditRow(table, physicalKey, mappedKey, rowIndex);	
-};
-
-/**
- * @param table required
- * @param physicalKey optional
- * @param mappedKey optional
- * @param rowIndex required
- */
-Reboard.createEditRow = function(table, physicalKey, mappedKey, rowIndex) {
-	if (table === null || typeof table === "undefined") {
-		throw new Error("table is null");
-	}
-	
-	if (physicalKey === null || typeof physicalKey === "undefined") {
-		physicalKey = "";
-	}
-	
-	if (mappedKey === null || typeof mappedKey === "undefined") {
-		mappedKey = "";
-	}
-	
-	if (rowIndex === null || typeof rowIndex === "undefined") {
-		throw new Error("rowIndex is null");
-	}
-
-
-    var row = table.insertRow(rowIndex);
-    row.tabindex = "0"; //makes the row focusable
-    var physicalKeyCell = row.insertCell(-1);
-    var mappedKeyCell = row.insertCell(-1);
-    var deleteButtonCell = row.insertCell(-1);
-
-    var physicalKeyInput = Reboard.createKeyInput("key", physicalKey);
-    var mappedKeyInput = Reboard.createKeyInput("value", mappedKey);
-    
-    physicalKeyInput.addEventListener("blur", function (event) {
-    	if (document.activeElement !== mappedKeyInput) {
-        	Reboard.convertFromEditToKeyMapRow(row);   		
-    	}
-    });    
-
-    mappedKeyInput.addEventListener("blur", function (event) {
-    	if (document.activeElement !== physicalKeyInput) {
-    		Reboard.convertFromEditToKeyMapRow(row);
-    	}
-    });
-    
-    physicalKeyCell.appendChild(physicalKeyInput);
-    mappedKeyCell.appendChild(mappedKeyInput);
-    deleteButtonCell.appendChild(Reboard.createDeleteButton(row));
-
-    Reboard.addButtonVisibilityModifier(row);
-    
-    row.addEventListener("focusout", function (event) {
-    	Reboard.convertFromEditToKeyMapRow(row);
-    });
-    
-    return row;  	
-};
-
-Reboard.convertFromEditToKeyMapRow = function (row) {
-	if (typeof row === "undefined" || row === null) {
-		throw new Error("row is null");
-	}
-	
-	if (row.cells.length < 2) {
-		throw new Error("row has less than 2 cells");
-	}
-	
-	var physicalKeyCell = row.cells[0];
-	var mappedKeyCell = row.cells[1];
-	
-	var physicalKey = physicalKeyCell.childNodes[0].value;
-	var mappedKey = mappedKeyCell.childNodes[0].value;
-	
-	var rowIndex = row.rowIndex;
-	
-	var table = row.parentNode;
-    table.deleteRow(rowIndex);
-    
-    return Reboard.createKeyMapRow(table, physicalKey, mappedKey, rowIndex);	
 };

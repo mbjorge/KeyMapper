@@ -40,4 +40,9 @@ reboardUIPanel.port.on("ready", function () {
 		physicalKey: "Z",
 		mappedKey: "X"
 	});
+	
+	reboardUIPanel.port.emit("delete", {
+		physicalKey: "S",
+		mappedKey: "J"
+	});
 });

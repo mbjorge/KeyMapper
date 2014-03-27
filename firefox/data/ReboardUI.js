@@ -9,9 +9,19 @@ window.addEventListener("load", function () {
     Reboard.createKeyMapRow(table, "D", "K");
     Reboard.createEditRow(table, "Z", "N", 4);
     Reboard.createKeyMapRow(table, "Q", "U");
-    Reboard.createKeyMapRow(table, "W", "I");
 
+    self.port.on("create", function (keyMapping) {
+    	Reboard.createKeyMapRow(table, keyMapping.physicalKey, keyMapping.mappedKey);
+    });
+    
+    self.port.on("delete", function (keyMapping) {
+    	Reboard.removeKeyMapRow(table, keyMapping.physicalKey, keyMapping.mappedKey);
+    });
+    
+    self.port.emit("ready");
 });
+
+
 
 /**
  * rowIndex can be omitted, in which case the row is appended at the end of the table.

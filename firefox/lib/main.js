@@ -28,3 +28,16 @@ var showUIHotKey = Hotkey({
 });
 
 reboardUIPanel.show();
+
+reboardUIPanel.port.on("ready", function () {
+
+	reboardUIPanel.port.emit("create", {
+		physicalKey: "G",
+		mappedKey: "B"
+	});
+	
+	reboardUIPanel.port.emit("create", {
+		physicalKey: "Z",
+		mappedKey: "X"
+	});
+});

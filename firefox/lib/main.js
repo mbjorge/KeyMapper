@@ -46,3 +46,11 @@ reboardUIPanel.port.on("ready", function () {
 		mappedKey: "J"
 	});
 });
+
+reboardUIPanel.port.on("create", function(keyMapping) {
+	console.log("create event");
+});
+
+reboardUIPanel.port.on("delete", function(keyMapping) {
+	console.log("delete event");
+});

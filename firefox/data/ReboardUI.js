@@ -97,8 +97,21 @@ Reboard.createAddButton = function(row) {
     addButton.innerHTML = "+";
     addButton.style.visibility = "hidden";   
     addButton.addEventListener("click", function (event) {
-    	var table = row.parentNode;
-        table.deleteRow(row.rowIndex);
+    	var physicalKeyCell = row.cells[0];
+    	var mappedKeyCell = row.cells[1];
+    	
+    	var physicalKey = physicalKeyCell.childNodes[0].value;
+    	var mappedKey = mappedKeyCell.childNodes[0].value;
+    	
+    	Reboard.createKeyMapRow(row.parentNode, physicalKey, mappedKey);
+    	
+    	self.port.emit("create", {
+    		physicalKey: physicalKey,
+    		mappedKey: mappedKey
+    	});
+    	
+    	physicalKeyCell.childNodes[0].value = "";
+    	mappedKeyCell.childNodes[0].value = "";
     });
     
     Reboard.addButtonVisibilityModifier(row, addButton);
@@ -149,6 +162,17 @@ Reboard.createDeleteButton = function(row) {
     deleteButton.innerHTML = "X";
     deleteButton.style.visibility = "hidden";   
     deleteButton.addEventListener("click", function (event) {
+    	var physicalKeyCell = row.cells[0];
+    	var mappedKeyCell = row.cells[1];
+    	
+    	var physicalKey = physicalKeyCell.innerHTML;
+    	var mappedKey = mappedKeyCell.innerHTML;
+    	
+    	self.port.emit("delete", {
+    		physicalKey: physicalKey,
+    		mappedKey: mappedKey
+    	});
+    	
     	var table = row.parentNode;
         table.deleteRow(row.rowIndex);
     });

@@ -4,10 +4,6 @@ window.addEventListener("load", function () {
     var table = document.getElementById("assignments");
     
     Reboard.createNewEntryRow(table);
-    Reboard.createKeyMapRow(table, "&#8592", "H");
-    Reboard.createKeyMapRow(table, "S", "J");
-    Reboard.createKeyMapRow(table, "D", "K");
-    Reboard.createKeyMapRow(table, "Q", "U");
 
     var resetButton = document.getElementById("reset");
     resetButton.addEventListener("click", function (event) {
@@ -16,11 +12,15 @@ window.addEventListener("load", function () {
     });
     
     self.port.on("create", function (keyMapping) {
-    	Reboard.createKeyMapRow(table, keyMapping.physicalKey, keyMapping.mappedKey);
+    	var physicalKey = KeyCodeMappings[keyMapping.physicalKeyCode];
+    	var mappedKey = KeyCodeMappings[keyMapping.mappedKeyCode];
+    	Reboard.createKeyMapRow(table, physicalKey, mappedKey);
     });
     
     self.port.on("delete", function (keyMapping) {
-    	Reboard.removeKeyMapRow(table, keyMapping.physicalKey, keyMapping.mappedKey);
+    	var physicalKey = KeyCodeMappings[keyMapping.physicalKeyCode];
+    	var mappedKey = KeyCodeMappings[keyMapping.mappedKeyCode];
+    	Reboard.removeKeyMapRow(table, physicalKey, mappedKey);
     });
     
     self.port.on("reset", function() {
@@ -84,11 +84,15 @@ Reboard.createKeyInput = function (name, value) {
 	keyInput.name = name;
 	keyInput.size = '1';
 	keyInput.value = value;
-	keyInput.addEventListener("change", function (event) {
-		event.target.value = event.target.value.toUpperCase();
+	keyInput.addEventListener("keydown", function (event) {
+		event.target.value = KeyCodeMappings[event.keyCode];
+		event.target.size = event.target.value.length;
+	});
+	keyInput.addEventListener("keypress", function (event) {
+		event.preventDefault();
 	});
 	keyInput.addEventListener("keyup", function (event) {
-		event.target.value = event.target.value.toUpperCase();
+		event.preventDefault();
 	});
 	
 	return keyInput;
@@ -113,11 +117,25 @@ Reboard.createAddButton = function(row) {
     	var physicalKey = physicalKeyCell.childNodes[0].value;
     	var mappedKey = mappedKeyCell.childNodes[0].value;
     	
+    	var physicalKeyCode = -1, mappedKeyCode = -1;
+    	for (var keyCode in KeyCodeMappings) {
+    		if (KeyCodeMappings[keyCode] === physicalKey) {
+    			physicalKeyCode = keyCode;
+    		} else if (KeyCodeMappings[keyCode] === mappedKey) {
+    			mappedKeyCode = keyCode;
+    		}
+    	}
+    	
+    	var invalidInput = (mappedKeyCode === -1) || (physicalKeyCode === -1);
+    	if (invalidInput) {
+    		return;
+    	}
+    	
     	Reboard.createKeyMapRow(row.parentNode, physicalKey, mappedKey);
     	
     	self.port.emit("create", {
-    		physicalKey: physicalKey,
-    		mappedKey: mappedKey
+    		physicalKeyCode: physicalKeyCode,
+    		mappedKeyCode: mappedKeyCode
     	});
     	
     	physicalKeyCell.childNodes[0].value = "";
@@ -178,9 +196,18 @@ Reboard.createDeleteButton = function(row) {
     	var physicalKey = physicalKeyCell.innerHTML;
     	var mappedKey = mappedKeyCell.innerHTML;
     	
+    	var physicalKeyCode = -1, mappedKeyCode = -1;
+    	for (var keyCode in KeyCodeMappings) {
+    		if (KeyCodeMappings[keyCode] === physicalKey) {
+    			physicalKeyCode = keyCode;
+    		} else if (KeyCodeMappings[keyCode] === mappedKey) {
+    			mappedKeyCode = keyCode;
+    		}
+    	}
+    	
     	self.port.emit("delete", {
-    		physicalKey: physicalKey,
-    		mappedKey: mappedKey
+    		physicalKeyCode: physicalKeyCode,
+    		mappedKeyCode: mappedKeyCode
     	});
     	
     	var table = row.parentNode;

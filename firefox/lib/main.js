@@ -24,7 +24,9 @@ pageMod.PageMod({
 
 var showUIHotKey = Hotkey({
 	combo: "accel-m",
-	onPress: function () {reboardUIPanel.show();}
+	onPress: function () {
+		reboardUIPanel.show();
+	}
 });
 
 reboardUIPanel.show();

@@ -1,14 +1,20 @@
 var Reboard = {};
 
-window.addEventListener("load", function() {
-	Reboard.addKeyMapping(KeyEvent.DOM_VK_W, KeyEvent.DOM_VK_UP);
-	Reboard.addKeyMapping(KeyEvent.DOM_VK_A, KeyEvent.DOM_VK_LEFT);
-	Reboard.addKeyMapping(KeyEvent.DOM_VK_S, KeyEvent.DOM_VK_DOWN);
-	Reboard.addKeyMapping(KeyEvent.DOM_VK_D, KeyEvent.DOM_VK_RIGHT);
+self.port.on("add", function(keyMapping) {
+	console.log("add event");
+	console.log(keyMapping);
+	Reboard.addKeyMapping(keyMapping.physicalKeyCode, keyMapping.mappedKeyCode);
 });
 
+self.port.on("delete", function(keyMapping) {
+	
+});
 
-Reboard.addKeyMapping(phsyicalKeyCode, mappedKeyCode) {
+self.port.on("reset", function() {
+	
+});
+
+Reboard.addKeyMapping = function (physicalKeyCode, mappedKeyCode) {
 	if (typeof physicalKeyCode === "undefined" || physicalKeyCode === null) {
 		throw new TypeError("physicalKeyCode is null");
 	}
@@ -20,13 +26,16 @@ Reboard.addKeyMapping(phsyicalKeyCode, mappedKeyCode) {
 	var keyEvents = ["keyup", "keydown", "keypress"];
 	
 	keyEvents.forEach(function(keyEvent) {
-		document.addEventListener(keyEvent, function (event) {
+		unsafeWindow.addEventListener(keyEvent, function (event) {
+			console.log(keyEvent + " detected");
+			console.log("physicalKeyCode: " + physicalKeyCode);
+			console.log("event.keyCode:" + event.keyCode);
 			if (event.keyCode === physicalKeyCode || event.which === physicalKeyCode) {
-				Reboard.triggerKeyEvent(document, keyEvent, mappedKeyCode);
+				Reboard.triggerKeyEvent(unsafeWindow, keyEvent, mappedKeyCode);
 			}
 		});
 	});
-}
+};
 
 /**
  * Based on http://jsbin.com/nalefohu/1/edit
@@ -79,4 +88,6 @@ Reboard.triggerKeyEvent = function(element, keyEvent, keyCode){
 	);
 
 	element.dispatchEvent(keyboardEvent); 
+	
+	console.log(keyCode + " was pressed");
 };

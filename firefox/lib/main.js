@@ -7,7 +7,7 @@ var reboardUIPanel = require("sdk/panel").Panel({
     width: 300,
     height: 400,
     contentURL: data.url("ReboardUI.html"),
-    contentScriptFile: data.url("ReboardUI.js")
+    contentScriptFile: [data.url("KeyCodeMappings.js"), data.url("ReboardUI.js")]
 });
 
 var widget = widgets.Widget({

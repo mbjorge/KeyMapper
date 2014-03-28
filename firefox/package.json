@@ -2,8 +2,8 @@
   "name": "firefox",
   "title": "firefox",
   "id": "jid1-EY7CAe2uS0BapA",
-  "description": "a basic add-on",
-  "author": "",
+  "description": "a keyboard remapper for HTML5 games",
+  "author": "Michael Bjorge",
   "license": "MPL 2.0",
   "version": "0.1"
 }
